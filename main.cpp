@@ -1,5 +1,7 @@
+#include <stdlib.h>
 #include <iostream>
 #include <string>
+#include <fstream>
 using namespace std;
 
 const int nakaNum = 16;
@@ -26,13 +28,25 @@ int main() {
 
     // Command line
 
+    // Permission level for make-shift command line.
     int permission = 5;
 
     // Access to make-shift command line while permission is above 0.
     while (permission > 0) {
+        string slash = "/";
         string cmdline;
         cout << username << " [Permission - " << permission << "]: ";
         getline(cin, cmdline);
+
+        if (cmdline == slash + "cfile") {
+            string fileName;
+            cout << "Enter file name: ";
+            getline(cin, fileName);
+
+            ofstream newFile(fileName + ".txt");
+            newFile << "Learning C++!";
+            newFile.close();
+        }
 
         permission--;
     }

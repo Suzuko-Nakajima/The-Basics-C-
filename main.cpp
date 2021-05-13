@@ -1,99 +1,126 @@
 #include <stdlib.h>
 #include <iostream>
 #include <string>
+#include <sstream>
 #include <fstream>
 #include <chrono>
 #include <utility>
 #include <cstdlib>
+#include <list>
 #include <exception>
 
 using namespace std;
 
-bool core = true;
+bool basics = true;
+bool permission = true;
+bool legal;
+string slash = "/";
 
-const string programVersion = " \nVersion: 2021.5.12.100\n";
+// Text color class
 
-const int nakaNum = 16;
-int oddOne = 7;
-int evenTwo = 16;
-int sum = oddOne * evenTwo;
-string username;
-bool single = true;
+class txtColor {
+    public:
+    string reset = "\033[0m";
+    string red = "\033[91m";
+    string green = "\033[32m";
+};
 
-// Permission to access the make-shift command line.
-int permission = true;
+txtColor txtc;
 
-void initiate() {
-    string username;
-    cout << "Enter your username: ";
-    getline(cin, username);
-    cout << "Nakajima is learning...C++! | " << sum << "\n";
-    if (username == "I. Nakajima, Suzuko") {
-        cout << "Name: \n" << username << "\n = = = = = | * | = = = = = ";
-    }
-    else if (username != "I. Nakajima, Suzuko") {
-        cout << "\n" << username << "\n";
-    }
+// End of text color class.
+
+//Program version
+const string ver = "\n\033[34mVersion: 2021.5.13.2\n" + txtc.reset;
+
+void versionInfo() {
+    cout << ver;
 }
 
-void makeshift_cmdline() {
-    // Access to make-shift command line while permission is above 0.
-    while (permission == true) {
-        string slash = "/";
-        string cmdline;
-        cout << username << " [Permission - " << permission << "]: ";
-        getline(cin, cmdline);
 
-        if (cmdline == slash) {
-            cout << "\nThis is the slash prefix, it serves as the source to your access of commands in this make-shift command line.\n";
-        }
-        else if (cmdline == slash + "cfile") {
-            string fileName;
-            cout << "Enter file name: ";
-            getline(cin, fileName);
 
-            ofstream newFile(fileName + ".txt");
-            newFile << "Learning C++!";
-            newFile.close();
-        }
-        else if (cmdline == slash + "version") {
-            string ver = programVersion;
-            cout << programVersion;
-        }
-        else if (cmdline == slash + "shutdown") {
-            cout << "Closing make-shift terminal.";
-            break;
-        }
-        else if (cmdline == slash + "rap") {
-            cout << "Permissions revoked!";
-            int permission = false;
-        }
+// Make-shift command-line.
+void msCmdline() {
+    if (permission == true) {
+        while (permission == true) {
+            string msCMDline;
+            cout << "Root - [" << permission << "]: ";
+            getline(cin, msCMDline);
 
-    }
-}
-
-void basic() {
-    while (core == true) {
-        string slash = "/";
-        string mainarea;
-        cout << username << ": ";
-        getline(cin, mainarea);
-
-        if (mainarea == slash + "terminal") {
-            makeshift_cmdline();
+            if (msCMDline == slash + "help") {
+                cout << "\n- exit | Exits the make-shift command-line.\n- help | Displays this list (available for make-shift command-line only).\n- rap | Revokes administration permissions.\n\n";
+            }
+            else if (msCMDline == slash + "rap") {
+                cout << txtc.red << "\nRevoking permissions...\n\n" << txtc.reset;
+                permission = 0;
+            }
+            else if (msCMDline == slash + "exit") {
+                cout << " \nExiting...\n\n";
+                break;
+            }
         }
     }
+    //Declines access to make-shift command-line.
+    else if (permission == false) {
+        cout << txtc.red << "\nError: You do not have permission to access the make-shift command line.\n\n" << txtc.reset;
+    }
 }
-
 
 int main() {
+    cout << txtc.green << "The Basic command line is ready.\n\n" << txtc.reset;
 
-    // Message about command line priveleges revoked!
-    if (permission == false) {
-        cout << "\nYour permissions have been revoked!\nYou no longer have access to the make-shift command line.\n";
+    string username;
+    cout << "Enter username: ";
+    getline(cin, username);
+
+    int age;
+    cout << "Enter age: ";
+    cin >> age;
+
+    try {
+        if (age >= 18) {
+            cout << "\nUpdating program settings...\n";
+            legal = true;
+            cout << "Setting toggle: " << legal << "\n\n";
+        }
+        else {
+            throw 601;
+        }
+    }
+    catch (int num) {
+        cout << "\nUpdating program settings...\n";
+        legal = false;
+        cout << "Setting toggle: " << legal << "\n\n";
     }
 
-    initiate();
-    basic();
-    return 0;
+    // Access basic command line.
+    while (basics == 1) {
+        string cmdline;
+        cout << username << ": ";
+        getline(cin, cmdline);
+
+        if (cmdline == slash + "terminal") {
+            msCmdline();
+        }
+        else if (cmdline == slash + "version") {
+            versionInfo();
+        }
+        //Shutdown - closes the program.
+        else if (cmdline == slash + "shutdown") {
+            cout << "Shutting down program.";
+            basics = 0;
+        }
+        else if (cmdline == slash + "view_perms") {
+            if (permission == true) {
+                cout << "Permissions: " << permission << "\n";
+                cout << "\nYou (\033[32m" << username << "\033[0m) have access to the make-shift command line.\n\n";
+            }
+            else if (permission == false) {
+                cout << "Permissions: " << permission << "\n";
+                cout << "\nYou (\033[32m" << username << "\033[0m) do not have access to the make-shift command-line.\n\n";
+            }
+        }
+        else if (cmdline == slash + "help") {
+            cout << " \n- help | Show list of commands (for basic command-line).\n- shutdown | Shuts down the program (for basic command-line access).\n- version | Dispalys version of this program (basic command-line access only).\n- view_perms | View permissions.\n\n";
+        }
+    }
 }
